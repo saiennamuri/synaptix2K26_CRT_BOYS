@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .home-container {
+        text-align: center;
+    }
+
+    .home-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .home-subtitle {
+        font-size: 15px;
+        color: #6c757d;
+        margin-bottom: 35px;
+    }
+
+    .btn-candidate {
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-candidate:hover {
+        transform: scale(1.05);
+    }
+
+    .btn-admin {
+        background: linear-gradient(90deg, #ff6a00, #ee0979);
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-admin:hover {
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="home-container">
+
+    <div class="home-title">
+        SKILL MATCH PLATFORM
+    </div>
+
+    <div class="home-subtitle">
+        Smart Talent Evaluation & Intelligent Project Matching System
+    </div>
+
+    <div class="d-grid gap-3">
+
+        <a href="/candidate/register" class="btn btn-candidate text-white">
+            👨‍💻 Candidate Registration
+        </a>
+
+        <a href="/admin/login" class="btn btn-admin text-white">
+            🛡 Admin / Recruiter Panel
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

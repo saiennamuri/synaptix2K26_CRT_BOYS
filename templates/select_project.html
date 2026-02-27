@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .project-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #2c3e50;
+    }
+
+    .project-card {
+        padding: 20px;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        transition: 0.3s ease;
+        border-left: 5px solid #2a5298;
+        position: relative;
+    }
+
+    .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        background-color: #f8fbff;
+    }
+
+    .project-name {
+        font-weight: 600;
+        font-size: 16px;
+        color: #2a5298;
+    }
+
+    .project-skills {
+        font-size: 13px;
+        color: #6c757d;
+        margin-top: 6px;
+    }
+
+    .project-meta {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #555;
+    }
+
+    .project-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: #2a5298;
+        color: white;
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 20px;
+    }
+
+    .project-icon {
+        font-size: 18px;
+        margin-right: 6px;
+    }
+
+    .project-button {
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+
+    .back-btn {
+        margin-top: 25px;
+        text-align: center;
+    }
+</style>
+
+<div class="project-title">
+    Select Project to View Results
+</div>
+
+{% if projects %}
+
+<div class="row g-3">
+
+    {% for project in projects %}
+    <div class="col-12">
+        <a href="/admin/results/{{ project.id }}" class="project-button">
+            <div class="project-card">
+
+                <div class="project-badge">
+                    {{ project.total_candidates }} Candidates
+                </div>
+
+                <div class="project-name">
+                    <span class="project-icon">📁</span>
+                    {{ project.project_name }}
+                </div>
+
+                <div class="project-skills">
+                    Required Skills: {{ project.required_skills }}
+                </div>
+
+                <div class="project-meta">
+                    Click to view ranked candidates
+                </div>
+
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-warning text-center">
+    No projects available.
+</div>
+
+{% endif %}
+
+<div class="back-btn">
+    <a href="/admin/dashboard" class="btn-secondary-custom">
+        ← Back to Dashboard
+    </a>
+</div>
+
+{% endblock %}

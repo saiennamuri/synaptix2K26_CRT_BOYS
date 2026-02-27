@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .results-title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 25px;
+        color: #1e3c72;
+    }
+
+    .table-custom {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .table-custom thead {
+        background: linear-gradient(90deg, #2a5298, #1e3c72);
+        color: white;
+        font-size: 14px;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-custom tbody tr {
+        animation: fadeInUp 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    .table-custom tbody tr:nth-child(even) {
+        background-color: #f4f7fc;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: #eaf1ff;
+        transition: 0.3s;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            transform: translateY(10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .rank-badge {
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .gold { background-color: #d4af37; }
+    .silver { background-color: #a8a9ad; }
+    .bronze { background-color: #cd7f32; }
+    .normal { background-color: #2a5298; }
+
+    .progress {
+        height: 18px;
+        border-radius: 10px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        font-size: 11px;
+        font-weight: 600;
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+    }
+
+    .btn-view {
+        background-color: #2a5298;
+        border: none;
+        padding: 6px 14px;
+        font-size: 13px;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+    .btn-view:hover {
+        background-color: #1e3c72;
+    }
+
+    .back-btn {
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+
+<div class="results-title">
+    Candidate Results
+</div>
+
+{% if results %}
+
+<div class="table-responsive">
+    <table class="table table-custom">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Candidate Name</th>
+                <th>Email</th>
+                <th>Match Score</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+            <tr style="animation-delay: {{ loop.index0 * 0.1 }}s">
+
+                <td>
+                    {% if loop.index == 1 %}
+                        <span class="rank-badge gold">🥇 1</span>
+                    {% elif loop.index == 2 %}
+                        <span class="rank-badge silver">🥈 2</span>
+                    {% elif loop.index == 3 %}
+                        <span class="rank-badge bronze">🥉 3</span>
+                    {% else %}
+                        <span class="rank-badge normal">{{ loop.index }}</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ row.name }}</td>
+                <td>{{ row.email }}</td>
+
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar"
+                             role="progressbar"
+                             style="width: {{ row.match_score }}%;">
+                            {{ row.match_score }}%
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    <a href="/admin/result/{{ row.score_id }}"
+                       class="btn btn-view text-white">
+                        View
+                    </a>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<div class="alert alert-warning text-center">
+    No results available.
+</div>
+{% endif %}
+
+<div class="back-btn">
+    <a href="/admin/dashboard" class="btn-secondary-custom">
+        ← Back to Dashboard
+    </a>
+</div>
+
+{% endblock %}

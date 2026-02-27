@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-title">
+    Create New Project
+</div>
+
+{% if message %}
+<div class="alert alert-success text-center">
+    {{ message }}
+</div>
+{% endif %}
+
+<form method="POST" action="/admin/create-project">
+
+    <div class="mb-3">
+        <label class="form-label">Project Name</label>
+        <input type="text" name="project_name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Required Technical Skills (Comma Separated)</label>
+        <input type="text" name="required_skills" class="form-control"
+               placeholder="Python, SQL, Machine Learning" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label">Required Experience (Years)</label>
+        <input type="number" name="required_experience" class="form-control"
+               min="0" required>
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary-custom text-white">
+            Create Project
+        </button>
+    </div>
+
+    <a href="/admin/dashboard" class="btn-secondary-custom">
+        ← Back to Dashboard
+    </a>
+
+</form>
+
+{% endblock %}

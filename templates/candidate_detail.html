@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .detail-title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #1e3c72;
+    }
+
+    .score-main {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        color: #2a5298;
+        margin-bottom: 25px;
+    }
+
+    .analytics-box {
+        margin-bottom: 20px;
+    }
+
+    .progress {
+        height: 18px;
+        border-radius: 10px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .section-box {
+        background: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 15px;
+    }
+
+    .section-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+</style>
+<div class="section-box">
+    <div class="section-title">Skill-wise Match Analysis</div>
+
+    {% for skill, percent in result.skill_breakdown.items() %}
+        <div style="margin-bottom:10px;">
+            <strong>{{ skill | capitalize }}</strong>
+            <div class="progress">
+                <div class="progress-bar {% if percent == 100 %}bg-success{% else %}bg-danger{% endif %}"
+                     style="width: {{ percent }}%;">
+                    {{ percent }}%
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="section-box">
+    <div class="section-title">Weakness Areas</div>
+
+    {% for skill, percent in result.skill_breakdown.items() %}
+        {% if percent == 0 %}
+            <p style="color:red;">• {{ skill | capitalize }}</p>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div class="section-box">
+    <div class="section-title">Future Recommendations</div>
+
+    <ul>
+        {% for skill, percent in result.skill_breakdown.items() %}
+            {% if percent == 0 %}
+                <li>Improve practical knowledge in {{ skill | capitalize }}</li>
+            {% endif %}
+        {% endfor %}
+
+        {% if result.exp_score < 100 %}
+            <li>Gain more real-world project experience</li>
+        {% endif %}
+
+        {% if result.comm_score < 70 %}
+            <li>Improve professional communication skills</li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="detail-title">
+    Candidate Evaluation Analytics
+</div>
+
+<div class="score-main">
+    Overall Score: {{ result.match_score }}%
+</div>
+
+<div class="analytics-box">
+
+    <div class="section-title">Technical Match</div>
+    <div class="progress mb-3">
+        <div class="progress-bar bg-primary"
+             style="width: {{ result.tech_score }}%;">
+            {{ result.tech_score }}%
+        </div>
+    </div>
+
+    <div class="section-title">Experience Match</div>
+    <div class="progress mb-3">
+        <div class="progress-bar bg-success"
+             style="width: {{ result.exp_score }}%;">
+            {{ result.exp_score }}%
+        </div>
+    </div>
+
+    <div class="section-title">Communication</div>
+    <div class="progress mb-4">
+        <div class="progress-bar bg-warning text-dark"
+             style="width: {{ result.comm_score }}%;">
+            {{ result.comm_score }}%
+        </div>
+    </div>
+
+</div>
+
+<div class="section-box">
+    <div class="section-title">Detailed Evaluation</div>
+    <pre style="white-space: pre-wrap; font-family: inherit;">
+{{ result.explanation }}
+    </pre>
+</div>
+
+<a href="/admin/results/{{ result.project_id }}" class="btn-secondary-custom">
+    ← Back to Results
+</a>
+
+{% endblock %}

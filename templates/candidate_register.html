@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-title">
+    Candidate Registration
+</div>
+{% if message %}
+<div class="alert alert-success text-center">
+    {{ message }}
+</div>
+{% endif %}
+<form method="POST" action="/candidate/register">
+
+    <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Technical Skills</label>
+        <input type="text" name="technical_skills" class="form-control" placeholder="Python, SQL, ML" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Communication Skill (1-10)</label>
+        <input type="number" name="communication_skill" class="form-control" min="1" max="10" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Experience (Years)</label>
+        <input type="number" name="experience" class="form-control" min="0" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label">Graduation</label>
+        <input type="text" name="graduation" class="form-control" required>
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary-custom text-white">
+            Register
+        </button>
+    </div>
+
+    <a href="/" class="btn-secondary-custom">
+        ← Back to Home
+    </a>
+
+</form>
+
+{% endblock %}
