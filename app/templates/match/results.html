@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Match Score: {{ score }}%</h2>
+
+<ul>
+{% for item in explanation %}
+<li>{{ item }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

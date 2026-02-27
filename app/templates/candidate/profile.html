@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="glass-card fade-in">
+
+    <h2 class="mb-4 text-center">Candidate Profile</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5><strong>Name:</strong> {{ candidate.full_name }}</h5>
+            <h5><strong>Email:</strong> {{ candidate.email }}</h5>
+        </div>
+
+        <div class="col-md-6">
+            <h5><strong>Education:</strong> {{ candidate.education }}</h5>
+            <h5><strong>Experience:</strong> {{ candidate.experience_years }} Years</h5>
+        </div>
+    </div>
+
+    <hr>
+
+    <h4 class="mb-3">Skills & Proficiency</h4>
+
+    <div class="row">
+        {% for skill in candidate.skills %}
+        <div class="col-md-4 mb-3">
+            <div class="glass-card p-3 text-center">
+                <h6>{{ skill.skill.skill_name }}</h6>
+
+                <div class="progress mt-2" style="height: 10px;">
+                    <div class="progress-bar bg-info"
+                         role="progressbar"
+                         style="width: {{ skill.proficiency_level * 20 }}%">
+                    </div>
+                </div>
+
+                <small>Proficiency Level: {{ skill.proficiency_level }}/5</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,141 @@
+/* ============================= */
+/* GLOBAL STYLES */
+/* ============================= */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* ============================= */
+/* GLASS CARD */
+/* ============================= */
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
+
+.btn-custom {
+    background: linear-gradient(45deg, #ff512f, #dd2476);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(255, 81, 47, 0.6);
+}
+
+/* ============================= */
+/* FORM INPUTS */
+/* ============================= */
+
+.form-control {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    border-radius: 10px;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    border: 1px solid #fff;
+    color: white;
+}
+
+/* ============================= */
+/* NAVIGATION */
+/* ============================= */
+
+.navbar-custom {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+/* ============================= */
+/* MATCH SCORE DISPLAY */
+/* ============================= */
+
+.score-box {
+    font-size: 2.5rem;
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ============================= */
+/* LIST STYLING */
+/* ============================= */
+
+.list-group-item {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    margin-bottom: 8px;
+    border-radius: 10px;
+}
+
+/* ============================= */
+/* TABLE STYLE */
+/* ============================= */
+
+.table {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.table td, .table th {
+    border: none;
+}
+
+/* ============================= */
+/* ANIMATION */
+/* ============================= */
+
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
