@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect
 from config import Config
 import mysql.connector
 import json
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,7 +20,34 @@ def get_db_connection():
         database=app.config["MYSQL_DATABASE"]
     )
 
+def send_email(to_email, subject, body):
+     try:
+        msg = MIMEMultipart()
+        msg["From"] = app.config["EMAIL_USER"]
+        msg["To"] = to_email
+        msg["Subject"] = subject
 
+        msg.attach(MIMEText(body, "plain"))
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(
+            app.config["EMAIL_USER"],
+            app.config["EMAIL_PASSWORD"]
+        )
+
+        server.sendmail(
+            app.config["EMAIL_USER"],
+            to_email,
+            msg.as_string()
+        )
+
+        server.quit()
+
+        print("Email sent successfully to", to_email)
+
+     except Exception as e:
+        print("EMAIL ERROR:", str(e))
 # ---------------- HOME ----------------
 
 @app.route("/")
@@ -29,55 +59,82 @@ def home():
 
 @app.route("/candidate/register", methods=["GET", "POST"])
 def candidate_register():
+
     if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        technical_skills = request.form["technical_skills"]
-        communication_skill = int(request.form["communication_skill"])
-        experience = int(request.form["experience"])
-        graduation = request.form["graduation"]
+
+        name = request.form.get("name")
+        email = request.form.get("email")
+        technical_skills = request.form.get("technical_skills")
+        communication_skill = int(request.form.get("communication_skill"))
+        experience = int(request.form.get("experience"))
+        graduation = request.form.get("graduation")
 
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        query = """
-        INSERT INTO candidates
-        (name, email, technical_skills, communication_skill, experience, graduation)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """
+        try:
+            cursor.execute("""
+                INSERT INTO candidates
+                (name, email, technical_skills, communication_skill, experience, graduation)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (name, email, technical_skills,
+                  communication_skill, experience, graduation))
 
-        cursor.execute(query, (
-            name, email, technical_skills,
-            communication_skill, experience, graduation
-        ))
+            connection.commit()
 
-        connection.commit()
-        cursor.close()
-        connection.close()
+        except Exception as e:
+            connection.rollback()
+            print("Database error:", e)
 
-        return render_template("candidate_register.html",
-                               message="Registration Successful!")
+        finally:
+            cursor.close()
+            connection.close()
+
+        # SEND EMAIL (only inside POST)
+        try:
+            email_body = f"""
+Dear {name},
+
+Your registration on Skill Match Platform was successful.
+
+Regards,
+Skill Match Team
+"""
+            send_email(
+                email,
+                "Registration Successful - Skill Match Platform",
+                email_body
+            )
+
+        except Exception as e:
+            print("Email sending error:", e)
+
+        return render_template(
+            "candidate_register.html",
+            message="Registration Successful!"
+        )
 
     return render_template("candidate_register.html")
 
-
-# ---------------- ADMIN LOGIN ----------------
+# ---------------- DASHBOARD ----------------
+from werkzeug.security import check_password_hash
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
+
     if request.method == "POST":
+
         password = request.form["password"]
 
         if password == app.config["ADMIN_PASSWORD"]:
             return redirect("/admin/dashboard")
         else:
-            return render_template("admin_login.html", error="Invalid Password")
+            return render_template(
+                "admin_login.html",
+                error="Invalid Password"
+            )
 
     return render_template("admin_login.html")
-
-
-# ---------------- DASHBOARD ----------------
-
 @app.route("/admin/dashboard")
 def admin_dashboard():
     return render_template("admin_dashboard.html")
@@ -304,6 +361,48 @@ def candidate_detail(score_id):
         result["skill_breakdown"] = {}
 
     return render_template("candidate_detail.html", result=result)
+@app.route("/admin/send-email/<int:score_id>", methods=["POST"])
+def send_result_email(score_id):
 
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT s.match_score,
+               s.explanation,
+               c.name,
+               c.email
+        FROM scores s
+        JOIN candidates c ON s.candidate_id = c.id
+        WHERE s.id = %s
+    """, (score_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    if result:
+        email_body = f"""
+Dear {result['name']},
+
+Your project evaluation is complete.
+
+Final Match Score: {result['match_score']}%
+
+Detailed Explanation:
+{result['explanation']}
+
+Regards,
+Skill Match Platform
+"""
+
+        send_email(
+            result["email"],
+            "Your Evaluation Result - Skill Match Platform",
+            email_body
+        )
+
+    return redirect(request.referrer)
 if __name__ == "__main__":
     app.run(debug=True)

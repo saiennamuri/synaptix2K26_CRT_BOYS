@@ -5,22 +5,32 @@
 <style>
     .detail-title {
         text-align: center;
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 600;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
         color: #1e3c72;
     }
 
     .score-main {
         text-align: center;
-        font-size: 32px;
+        font-size: 34px;
         font-weight: 700;
         color: #2a5298;
         margin-bottom: 25px;
     }
 
-    .analytics-box {
+    .section-box {
+        background: #ffffff;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #2c3e50;
     }
 
     .progress {
@@ -34,25 +44,57 @@
         font-weight: 600;
     }
 
-    .section-box {
-        background: #ffffff;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
-    }
-
-    .section-title {
-        font-weight: 600;
-        margin-bottom: 10px;
-        color: #2c3e50;
+    .email-btn {
+        margin-top: 20px;
+        text-align: center;
     }
 </style>
+
+<!-- TITLE -->
+<div class="detail-title">
+    Candidate Evaluation Analytics
+</div>
+
+<!-- OVERALL SCORE -->
+<div class="score-main">
+    Overall Score: {{ result.match_score }}%
+</div>
+
+<!-- TECH / EXP / COMM ANALYTICS -->
+<div class="section-box">
+    <div class="section-title">Performance Breakdown</div>
+
+    <p><strong>Technical Match</strong></p>
+    <div class="progress mb-3">
+        <div class="progress-bar bg-primary"
+             style="width: {{ result.tech_score }}%;">
+            {{ result.tech_score }}%
+        </div>
+    </div>
+
+    <p><strong>Experience Match</strong></p>
+    <div class="progress mb-3">
+        <div class="progress-bar bg-success"
+             style="width: {{ result.exp_score }}%;">
+            {{ result.exp_score }}%
+        </div>
+    </div>
+
+    <p><strong>Communication</strong></p>
+    <div class="progress mb-3">
+        <div class="progress-bar bg-warning text-dark"
+             style="width: {{ result.comm_score }}%;">
+            {{ result.comm_score }}%
+        </div>
+    </div>
+</div>
+
+<!-- SKILL BREAKDOWN -->
 <div class="section-box">
     <div class="section-title">Skill-wise Match Analysis</div>
 
     {% for skill, percent in result.skill_breakdown.items() %}
-        <div style="margin-bottom:10px;">
+        <div style="margin-bottom:12px;">
             <strong>{{ skill | capitalize }}</strong>
             <div class="progress">
                 <div class="progress-bar {% if percent == 100 %}bg-success{% else %}bg-danger{% endif %}"
@@ -64,16 +106,24 @@
     {% endfor %}
 </div>
 
+<!-- WEAKNESS -->
 <div class="section-box">
     <div class="section-title">Weakness Areas</div>
 
+    {% set weakness_found = false %}
     {% for skill, percent in result.skill_breakdown.items() %}
         {% if percent == 0 %}
+            {% set weakness_found = true %}
             <p style="color:red;">• {{ skill | capitalize }}</p>
         {% endif %}
     {% endfor %}
+
+    {% if not weakness_found %}
+        <p style="color:green;">No major skill gaps detected.</p>
+    {% endif %}
 </div>
 
+<!-- FUTURE RECOMMENDATIONS -->
 <div class="section-box">
     <div class="section-title">Future Recommendations</div>
 
@@ -94,42 +144,7 @@
     </ul>
 </div>
 
-<div class="detail-title">
-    Candidate Evaluation Analytics
-</div>
-
-<div class="score-main">
-    Overall Score: {{ result.match_score }}%
-</div>
-
-<div class="analytics-box">
-
-    <div class="section-title">Technical Match</div>
-    <div class="progress mb-3">
-        <div class="progress-bar bg-primary"
-             style="width: {{ result.tech_score }}%;">
-            {{ result.tech_score }}%
-        </div>
-    </div>
-
-    <div class="section-title">Experience Match</div>
-    <div class="progress mb-3">
-        <div class="progress-bar bg-success"
-             style="width: {{ result.exp_score }}%;">
-            {{ result.exp_score }}%
-        </div>
-    </div>
-
-    <div class="section-title">Communication</div>
-    <div class="progress mb-4">
-        <div class="progress-bar bg-warning text-dark"
-             style="width: {{ result.comm_score }}%;">
-            {{ result.comm_score }}%
-        </div>
-    </div>
-
-</div>
-
+<!-- DETAILED EXPLANATION -->
 <div class="section-box">
     <div class="section-title">Detailed Evaluation</div>
     <pre style="white-space: pre-wrap; font-family: inherit;">
@@ -137,8 +152,20 @@
     </pre>
 </div>
 
-<a href="/admin/results/{{ result.project_id }}" class="btn-secondary-custom">
-    ← Back to Results
-</a>
+<!-- EMAIL BUTTON -->
+<div class="email-btn">
+    <form method="POST" action="/admin/send-email/{{ result.score_id }}">
+        <button type="submit" class="btn btn-success">
+            📩 Send Result to Candidate
+        </button>
+    </form>
+</div>
+
+<!-- BACK BUTTON -->
+<div style="text-align:center; margin-top:20px;">
+    <a href="/admin/results/{{ result.project_id }}" class="btn-secondary-custom">
+        ← Back to Results
+    </a>
+</div>
 
 {% endblock %}

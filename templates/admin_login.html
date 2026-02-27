@@ -1,9 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 <div class="page-title">
-    Admin / Recruiter Login
+    Admin Login
 </div>
 
 {% if error %}
@@ -12,9 +11,9 @@
 </div>
 {% endif %}
 
-<form method="POST" action="/admin/login">
+<form method="POST">
 
-    <div class="mb-4">
+    <div class="mb-3">
         <label class="form-label">Enter Admin Password</label>
         <input type="password" name="password" class="form-control" required>
     </div>
