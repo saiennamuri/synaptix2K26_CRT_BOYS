@@ -3,12 +3,14 @@ from config import Config
 import mysql.connector
 import json
 import smtplib
+import joblib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
+# Load ML model once when app starts
+model = joblib.load("scoring_model.pkl")
 
 # ---------------- DATABASE CONNECTION ----------------
 
@@ -207,11 +209,9 @@ def create_project():
             comm_score = (candidate["communication_skill"] / 10) * 100
 
             # ---------------- FINAL WEIGHTED SCORE ----------------
-            final_score = (
-                (tech_score * 0.5) +
-                (exp_score * 0.3) +
-                (comm_score * 0.2)
-            )
+            # ---------------- ML PREDICTED SCORE ----------------
+            features = [[tech_score, exp_score, comm_score]]
+            final_score = model.predict(features)[0]
 
             # ---------------- SUGGESTIONS ----------------
             suggestions = []
@@ -404,5 +404,6 @@ Skill Match Platform
         )
 
     return redirect(request.referrer)
+
 if __name__ == "__main__":
     app.run(debug=True)
